@@ -4,7 +4,9 @@ import express, { Router } from "express";
 // import * as itemController from "../controllers/itemController";
 import { validateRequest } from "../middleware/middleware.js";
 import { itemSchemas } from "../validations/itemValidation.js";
-import { createItem } from "../controllers/productController.js";
+import {
+    createItem, getAllItems, updateItem, deleteItem
+} from "../controllers/productController.js";
 
 const router = Router()
 
@@ -14,10 +16,18 @@ const router = Router()
 //     })
 // })
 
+// "/api/v1/items" prefixes all below routes
+router.get("/", getAllItems);
 router.post(
-    "/api/v1/products",
+    "/",
     validateRequest(itemSchemas.create),
     createItem
 );
+router.put(
+    "/:id",
+    validateRequest(itemSchemas.update),
+    updateItem
+);
+router.delete("/:id", deleteItem);
 
 export default router

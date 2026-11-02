@@ -11,6 +11,33 @@ import { successResponse } from "../models/responseModel.js";
 
 
 
+/**
+ * Manages requests and reponses to retrieve all items
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
+export const getAllItems = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        const items: ProductModels[] = await itemService.getAllItems();
+        res.status(HTTP_STATUS.OK).json(
+            successResponse(items, "Items successfully retireved")
+        );
+    } catch (error: unknown) {
+        next(error);
+    }
+};
+
+/**
+ * Manages requests, reponses, and validation to create an item
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
 export const createItem = async (
     req: Request,
     res: Response,
@@ -29,6 +56,63 @@ export const createItem = async (
         });
         res.status(HTTP_STATUS.CREATED).json(
             successResponse(newItem, "Item created successfully")
+        );
+    } catch (error: unknown) {
+        next(error);
+    }
+};
+
+/**
+ * Manages requests and reponses to update an item
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
+export const updateItem = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        // the ":id" route segment is always a single string
+        const id = req.params.id as string;
+
+        // Extract update fields
+        const { name, description, price } = req.body;
+
+        // create the update item object with the fields to be updated
+        const updatedItem: ProductModels = await itemService.updateItem(id, {
+            name,
+            description,
+            price,
+        });
+
+        res.status(HTTP_STATUS.OK).json(
+            successResponse(updatedItem, "Item updated successfully")
+        );
+    } catch (error: unknown) {
+        next(error);
+    }
+};
+
+/**
+ * Manages requests and reponses to delete an item
+ * @param req - The express Request
+ * @param res  - The express Response
+ * @param next - The express middleware chaining function
+ */
+export const deleteItem = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    try {
+        // the ":id" route segment is always a single string
+        const id = req.params.id as string;
+
+        await itemService.deleteItem(id);
+        res.status(HTTP_STATUS.OK).json(
+            successResponse("Item successfully deleted")
         );
     } catch (error: unknown) {
         next(error);

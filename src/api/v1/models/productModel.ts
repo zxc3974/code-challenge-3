@@ -1,6 +1,7 @@
 export interface ProductModels {
     id: string,
     name: string,
+    description: string,
     sku: string,
     quality: number,
     price: number,

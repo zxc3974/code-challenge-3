@@ -9,4 +9,7 @@ initializeApp({
 
 const db: Firestore = getFirestore();
 
+// optional fields such as price may be undefined, which Firestore rejects by default
+db.settings({ ignoreUndefinedProperties: true });
+
 export { db };
